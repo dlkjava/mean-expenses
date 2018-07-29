@@ -8,14 +8,22 @@ import { AuthService } from '../../auth/auth.service';
 import { Receipt } from '../receipt.model';
 import { ReceiptsService } from '../receipts.service';
 
+export interface PaymentType {
+  value: string;
+  viewValue;
+}
+export interface Category {
+  value: string;
+  viewValue: string;
+}
+
 @Component({
   selector: 'app-receipt-create',
   templateUrl: './receipt-create.component.html',
   styleUrls: ['./receipt-create.component.scss']
 })
 export class ReceiptCreateComponent implements OnInit, OnDestroy {
-  // enteredTitle = '';
-  // enteredContent = '';
+
   receipt: Receipt;
   isLoading = false;
   form: FormGroup;
@@ -23,6 +31,23 @@ export class ReceiptCreateComponent implements OnInit, OnDestroy {
   private mode = 'create';
   private receiptId: string;
   private authStatusSub: Subscription;
+
+  paymentTypes: PaymentType[] = [
+    {value: 'cash', viewValue: 'Cash'},
+    {value: 'check', viewValue: 'Check'},
+    {value: 'credit', viewValue: 'Credit'},
+    {value: 'debit', viewValue: 'Debit'},
+    {value: 'other', viewValue: 'Other'}
+  ];
+
+  categories: Category[] = [
+    {value: 'bills', viewValue: 'Bills'},
+    {value: 'household', viewValue: 'Household'},
+    {value: 'food', viewValue: 'Food'},
+    {value: 'clothing', viewValue: 'Clothing'},
+    {value: 'travel', viewValue: 'Travel'},
+    {value: 'entertainment', viewValue: 'Entertainment'}
+  ];
 
   constructor(
     public receiptsService: ReceiptsService,
@@ -40,11 +65,16 @@ export class ReceiptCreateComponent implements OnInit, OnDestroy {
       title: new FormControl(null, {
         validators: [Validators.required, Validators.minLength(3)]
       }),
-      content: new FormControl(null, { validators: [Validators.required] }),
+      // content: new FormControl(null, { validators: [Validators.required] }),
       image: new FormControl(null, {
         validators: [Validators.required],
         asyncValidators: [mimeType]
-      })
+      }),
+      category: new FormControl(null, { validators: [Validators.required] }),
+      paymentType: new FormControl(null, { validators: [Validators.required] }),
+      date: new FormControl(null, { validators: [Validators.required] }),
+      total: new FormControl(null, { validators: [Validators.required, Validators.pattern(/^\d*(?:[.,]\d{1,2})?$/)] }),
+      notes: new FormControl(null, { validators: [Validators.required] })
     });
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('receiptId')) {
@@ -56,14 +86,22 @@ export class ReceiptCreateComponent implements OnInit, OnDestroy {
           this.receipt = {
             id: receiptData._id,
             title: receiptData.title,
-            content: receiptData.content,
             imagePath: receiptData.imagePath,
+            category: receiptData.category,
+            paymentType: receiptData.paymentType,
+            date: receiptData.date,
+            total: receiptData.total,
+            notes: receiptData.notes,
             creator: receiptData.creator
           };
           this.form.setValue({
             title: this.receipt.title,
-            content: this.receipt.content,
-            image: this.receipt.imagePath
+            image: this.receipt.imagePath,
+            category: this.receipt.category,
+            paymentType: this.receipt.paymentType,
+            date: this.receipt.date,
+            total: this.receipt.total,
+            notes: this.receipt.notes,
           });
         });
       } else {
@@ -92,15 +130,23 @@ export class ReceiptCreateComponent implements OnInit, OnDestroy {
     if (this.mode === 'create') {
       this.receiptsService.addReceipt(
         this.form.value.title,
-        this.form.value.content,
-        this.form.value.image
+        this.form.value.image,
+        this.form.value.category,
+        this.form.value.paymentType,
+        this.form.value.date,
+        parseFloat(this.form.value.total),
+        this.form.value.notes
       );
     } else {
       this.receiptsService.updateReceipt(
         this.receiptId,
         this.form.value.title,
-        this.form.value.content,
-        this.form.value.image
+        this.form.value.image,
+        this.form.value.category,
+        this.form.value.paymentType,
+        this.form.value.date,
+        parseFloat(this.form.value.total),
+        this.form.value.notes
       );
     }
     this.form.reset();

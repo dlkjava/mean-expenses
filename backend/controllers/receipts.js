@@ -4,8 +4,12 @@ exports.createReceipt = (req, res, next) => {
   const url = req.protocol + "://" + req.get("host");
   const receipt = new Receipt({
     title: req.body.title,
-    content: req.body.content,
     imagePath: url + "/images/" + req.file.filename,
+    category: req.body.category,
+    paymentType: req.body.paymentType,
+    date: req.body.date,
+    total: req.body.total,
+    notes: req.body.notes,
     creator: req.userData.userId
   });
   receipt
@@ -35,8 +39,12 @@ exports.updateReceipt = (req, res, next) => {
   const receipt = new Receipt({
     _id: req.body.id,
     title: req.body.title,
-    content: req.body.content,
     imagePath: imagePath,
+    category: req.body.category,
+    paymentType: req.body.paymentType,
+    date: req.body.date,
+    total: req.body.total,
+    notes: req.body.notes,
     creator: req.userData.userId
   });
   Receipt.updateOne({ _id: req.params.id, creator: req.userData.userId }, receipt)

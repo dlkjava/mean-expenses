@@ -31,6 +31,11 @@ export class ReceiptsService {
                 content: receipt.content,
                 id: receipt._id,
                 imagePath: receipt.imagePath,
+                category: receipt.category,
+                paymentType: receipt.paymentType,
+                date: receipt.date,
+                total: receipt.total,
+                notes: receipt.notes,
                 creator: receipt.creator
               };
             }),
@@ -55,17 +60,25 @@ export class ReceiptsService {
     return this.http.get<{
       _id: string;
       title: string;
-      content: string;
       imagePath: string;
+      category: string;
+      paymentType: string;
+      date: string;
+      total: number;
+      notes: string;
       creator: string;
     }>(BACKEND_URL + id);
   }
 
-  addReceipt(title: string, content: string, image: File) {
+  addReceipt(title: string, image: File, category: string, paymentType: string, date: string, total: number, notes: string) {
     const receiptData = new FormData();
     receiptData.append('title', title);
-    receiptData.append('content', content);
     receiptData.append('image', image, title);
+    receiptData.append('category', category);
+    receiptData.append('paymentType', paymentType);
+    receiptData.append('date', date);
+    receiptData.append('total', total.toString(10));
+    receiptData.append('notes', notes);
     this.http
       .post<{ message: string; receipt: Receipt }>(
         BACKEND_URL,
@@ -76,20 +89,30 @@ export class ReceiptsService {
       });
   }
 
-  updateReceipt(id: string, title: string, content: string, image: File | string) {
+  updateReceipt(
+    id: string, title: string, image: File | string, category: string, paymentType: string, date: string, total: number, notes: string
+  ) {
     let receiptData: Receipt | FormData;
     if (typeof image === 'object') {
       receiptData = new FormData();
       receiptData.append('id', id);
       receiptData.append('title', title);
-      receiptData.append('content', content);
       receiptData.append('image', image, title);
+      receiptData.append('category', category);
+      receiptData.append('paymentType', paymentType);
+      receiptData.append('date', date);
+      receiptData.append('total', total.toString(10));
+      receiptData.append('notes', notes);
     } else {
       receiptData = {
         id: id,
         title: title,
-        content: content,
         imagePath: image,
+        category: category,
+        paymentType: paymentType,
+        date: date,
+        total: total,
+        notes: notes,
         creator: null
       };
     }
