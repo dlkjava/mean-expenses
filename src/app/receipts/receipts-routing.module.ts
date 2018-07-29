@@ -7,7 +7,7 @@ import { ReceiptCreateComponent } from './receipt-create/receipt-create.componen
 const routes: Routes = [
   { path: '', component: ReceiptListComponent },
   { path: 'create', component: ReceiptCreateComponent, canActivate: [AuthGuard] },
-  { path: 'edit/:postId', component: ReceiptCreateComponent, canActivate: [AuthGuard] }
+  { path: 'edit/:receiptId', component: ReceiptCreateComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
