@@ -5,7 +5,7 @@ import { ReceiptListComponent } from './receipt-list/receipt-list.component';
 import { ReceiptCreateComponent } from './receipt-create/receipt-create.component';
 
 const routes: Routes = [
-  { path: '', component: ReceiptListComponent },
+  { path: 'list', component: ReceiptListComponent },
   { path: 'create', component: ReceiptCreateComponent, canActivate: [AuthGuard] },
   { path: 'edit/:receiptId', component: ReceiptCreateComponent, canActivate: [AuthGuard] }
 ];

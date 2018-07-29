@@ -7,15 +7,8 @@ import { mimeType } from './mime-type.validator';
 import { AuthService } from '../../auth/auth.service';
 import { Receipt } from '../receipt.model';
 import { ReceiptsService } from '../receipts.service';
+import { SETTINGS, Setting } from '../../app.settings';
 
-export interface PaymentType {
-  value: string;
-  viewValue;
-}
-export interface Category {
-  value: string;
-  viewValue: string;
-}
 
 @Component({
   selector: 'app-receipt-create',
@@ -32,22 +25,24 @@ export class ReceiptCreateComponent implements OnInit, OnDestroy {
   private receiptId: string;
   private authStatusSub: Subscription;
 
-  paymentTypes: PaymentType[] = [
-    {value: 'cash', viewValue: 'Cash'},
-    {value: 'check', viewValue: 'Check'},
-    {value: 'credit', viewValue: 'Credit'},
-    {value: 'debit', viewValue: 'Debit'},
-    {value: 'other', viewValue: 'Other'}
-  ];
+  paymentTypes: Setting[];
+  // paymentTypes: PaymentType[] = [
+  //   {value: 'cash', viewValue: 'Cash'},
+  //   {value: 'check', viewValue: 'Check'},
+  //   {value: 'credit', viewValue: 'Credit'},
+  //   {value: 'debit', viewValue: 'Debit'},
+  //   {value: 'other', viewValue: 'Other'}
+  // ];
 
-  categories: Category[] = [
-    {value: 'bills', viewValue: 'Bills'},
-    {value: 'household', viewValue: 'Household'},
-    {value: 'food', viewValue: 'Food'},
-    {value: 'clothing', viewValue: 'Clothing'},
-    {value: 'travel', viewValue: 'Travel'},
-    {value: 'entertainment', viewValue: 'Entertainment'}
-  ];
+  categories: Setting[];
+  // categories: Category[] = [
+  //   {value: 'bills', viewValue: 'Bills'},
+  //   {value: 'household', viewValue: 'Household'},
+  //   {value: 'food', viewValue: 'Food'},
+  //   {value: 'clothing', viewValue: 'Clothing'},
+  //   {value: 'travel', viewValue: 'Travel'},
+  //   {value: 'entertainment', viewValue: 'Entertainment'}
+  // ];
 
   constructor(
     public receiptsService: ReceiptsService,
@@ -56,6 +51,8 @@ export class ReceiptCreateComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.paymentTypes = SETTINGS.paymentTypes;
+    this.categories = SETTINGS.categories;
     this.authStatusSub = this.authService
       .getAuthStatusListener()
       .subscribe(authStatus => {
