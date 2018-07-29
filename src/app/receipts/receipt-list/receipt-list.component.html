@@ -4,10 +4,14 @@
     <mat-expansion-panel-header>
       {{ receipt.title }}
     </mat-expansion-panel-header>
-    <div class="receipt-image">
+    <div class="receipt-image" *ngIf="receipt.imagePath !== '' && receipt.imagePath">
       <img [src]="receipt.imagePath" [alt]="receipt.title">
     </div>
-    <p>{{ receipt.content }}</p>
+    <p>Category: {{ receipt.category }}</p>
+    <p>Payment type: {{ receipt.paymentType }}</p>
+    <p>Date: {{ receipt.date }}</p>
+    <p>Receipt Total: {{ receipt.total | currency:'USD':'symbol':'1.2-2' }}</p>
+    <p>Receipt Notes: {{ receipt.notes }}</p>
     <mat-action-row *ngIf="userIsAuthenticated && userId === receipt.creator">
       <a mat-button color="primary" [routerLink]="['/edit', receipt.id]">EDIT</a>
       <button mat-button color="warn" (click)="onDelete(receipt.id)">DELETE</button>
