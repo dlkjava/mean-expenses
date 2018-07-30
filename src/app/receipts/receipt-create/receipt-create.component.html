@@ -16,11 +16,6 @@
     </div>
     <!-- <mat-error *ngIf="form.get('image').invalid">Please upload an image.</mat-error> -->
 
-    <!-- <mat-form-field>
-      <textarea matInput rows="4" formControlName="content" placeholder="Receipt Content"></textarea>
-      <mat-error *ngIf="form.get('content').invalid">Please enter receipt content.</mat-error>
-    </mat-form-field> -->
-
     <mat-form-field>
       <mat-select matInput placeholder="Choose category" formControlName="category">
         <mat-option *ngFor="let category of categories" [value]="category.value">

@@ -70,6 +70,42 @@ export class ReceiptsService {
     }>(BACKEND_URL + id);
   }
 
+  getReceiptsByCategory(category: string, receiptsPerPage: number, currentPage: number) {
+    const queryParams = `?pagesize=${receiptsPerPage}&page=${currentPage}`;
+    this.http
+      .get<{ message: string; receipts: any; maxReceipts: number }>(
+        BACKEND_URL + 'category/' + category + queryParams
+      )
+      .pipe(
+        map(receiptData => {
+          return {
+            receipts: receiptData.receipts.map(receipt => {
+              return {
+                title: receipt.title,
+                content: receipt.content,
+                id: receipt._id,
+                imagePath: receipt.imagePath,
+                category: receipt.category,
+                paymentType: receipt.paymentType,
+                date: receipt.date,
+                total: receipt.total,
+                notes: receipt.notes,
+                creator: receipt.creator
+              };
+            }),
+            maxReceipts: receiptData.maxReceipts
+          };
+        })
+      )
+      .subscribe(transformedReceiptData => {
+        this.receipts = transformedReceiptData.receipts;
+        this.receiptsUpdated.next({
+          receipts: [...this.receipts],
+          receiptCount: transformedReceiptData.maxReceipts
+        });
+      });
+  }
+
   addReceipt(title: string, image: File, category: string, paymentType: string, date: string, total: number, notes: string) {
     const receiptData = new FormData();
     receiptData.append('title', title);
@@ -85,7 +121,7 @@ export class ReceiptsService {
         receiptData
       )
       .subscribe(responseData => {
-        this.router.navigate(['/']);
+        this.router.navigate(['/receipts/list']);
       });
   }
 
@@ -119,7 +155,7 @@ export class ReceiptsService {
     this.http
       .put(BACKEND_URL + id, receiptData)
       .subscribe(response => {
-        this.router.navigate(['/']);
+        this.router.navigate(['/receipts/list']);
       });
   }
 

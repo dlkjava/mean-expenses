@@ -9,7 +9,6 @@ import { Receipt } from '../receipt.model';
 import { ReceiptsService } from '../receipts.service';
 import { SETTINGS, Setting } from '../../app.settings';
 
-
 @Component({
   selector: 'app-receipt-create',
   templateUrl: './receipt-create.component.html',
@@ -21,28 +20,11 @@ export class ReceiptCreateComponent implements OnInit, OnDestroy {
   isLoading = false;
   form: FormGroup;
   imagePreview: string;
+  paymentTypes: Setting[];
+  categories: Setting[];
   private mode = 'create';
   private receiptId: string;
   private authStatusSub: Subscription;
-
-  paymentTypes: Setting[];
-  // paymentTypes: PaymentType[] = [
-  //   {value: 'cash', viewValue: 'Cash'},
-  //   {value: 'check', viewValue: 'Check'},
-  //   {value: 'credit', viewValue: 'Credit'},
-  //   {value: 'debit', viewValue: 'Debit'},
-  //   {value: 'other', viewValue: 'Other'}
-  // ];
-
-  categories: Setting[];
-  // categories: Category[] = [
-  //   {value: 'bills', viewValue: 'Bills'},
-  //   {value: 'household', viewValue: 'Household'},
-  //   {value: 'food', viewValue: 'Food'},
-  //   {value: 'clothing', viewValue: 'Clothing'},
-  //   {value: 'travel', viewValue: 'Travel'},
-  //   {value: 'entertainment', viewValue: 'Entertainment'}
-  // ];
 
   constructor(
     public receiptsService: ReceiptsService,
@@ -62,7 +44,6 @@ export class ReceiptCreateComponent implements OnInit, OnDestroy {
       title: new FormControl(null, {
         validators: [Validators.required, Validators.minLength(3)]
       }),
-      // content: new FormControl(null, { validators: [Validators.required] }),
       image: new FormControl(null, {
         validators: [Validators.required],
         asyncValidators: [mimeType]

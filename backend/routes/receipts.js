@@ -17,4 +17,6 @@ router.get("/:id", ReceiptController.getReceipt);
 
 router.delete("/:id", checkAuth, ReceiptController.deleteReceipt);
 
+router.get("/category/:category", ReceiptController.getReceiptsByCategory);
+
 module.exports = router;

@@ -89,6 +89,33 @@ exports.getReceipts = (req, res, next) => {
     });
 };
 
+exports.getReceiptsByCategory = (req, res, next) => {
+  const pageSize = +req.query.pagesize;
+  const currentPage = +req.query.page;
+  const receiptQuery = Receipt.find({ 'category': req.params.category});
+  let fetchedReceipts;
+  if (pageSize && currentPage) {
+    receiptQuery.skip(pageSize * (currentPage - 1)).limit(pageSize);
+  }
+  receiptQuery
+    .then(documents => {
+      fetchedReceipts = documents;
+      return Receipt.countDocuments();
+    })
+    .then(count => {
+      res.status(200).json({
+        message: "Receipts fetched by category " + req.params.category + " successfully!",
+        receipts: fetchedReceipts,
+        maxReceipts: count
+      });
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "Fetching receipts by category " + req.params.category + " failed!"
+      });
+    });
+};
+
 exports.getReceipt = (req, res, next) => {
   Receipt.findById(req.params.id)
     .then(receipt => {

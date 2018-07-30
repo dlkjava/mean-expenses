@@ -2,7 +2,9 @@
     <mat-grid-tile-header>
         <h2>Dashboard</h2>
       </mat-grid-tile-header>
-      <mat-grid-tile *ngFor="let category of categories" [ngStyle]="{'background': category.color}">{{category.viewValue}}</mat-grid-tile>
+      <mat-grid-tile *ngFor="let category of categories" [ngStyle]="{'background': category.color}">
+        <a mat-raised-button routerLink="/receipts/category/{{category.value}}" routerLinkActive="mat-accent">{{category.viewValue}}</a>
+      </mat-grid-tile>
 </mat-grid-list>
 
 <!-- DEBUG: categories: {{categories | json}} -->
