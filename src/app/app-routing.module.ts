@@ -1,9 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [
-  { path: '', loadChildren: './receipts/receipts.module#ReceiptsModule'},
+  { path: '', component: DashboardComponent },
+  { path: 'receipts', loadChildren: './receipts/receipts.module#ReceiptsModule'},
+  { path: 'reports', loadChildren: './reports/reports.module#ReportsModule'},
   { path: 'auth', loadChildren: './auth/auth.module#AuthModule'}
 ];
 

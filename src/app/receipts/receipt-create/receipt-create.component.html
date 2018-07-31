@@ -1,10 +1,12 @@
 <mat-card>
   <mat-spinner *ngIf="isLoading"></mat-spinner>
   <form [formGroup]="form" (submit)="onSaveReceipt()" *ngIf="!isLoading">
+
     <mat-form-field>
       <input matInput type="text" formControlName="title" placeholder="Receipt Title">
       <mat-error *ngIf="form.get('title').invalid">Please enter a receipt title.</mat-error>
     </mat-form-field>
+
     <div>
       <button mat-stroked-button type="button" (click)="filePicker.click()">Pick Image</button>
       <input type="file" #filePicker (change)="onImagePicked($event)">
@@ -12,10 +14,47 @@
     <div class="image-preview" *ngIf="imagePreview !== '' && imagePreview && form.get('image').valid">
       <img [src]="imagePreview" [alt]="form.value.title">
     </div>
+    <!-- <mat-error *ngIf="form.get('image').invalid">Please upload an image.</mat-error> -->
+
     <mat-form-field>
-      <textarea matInput rows="4" formControlName="content" placeholder="Receipt Content"></textarea>
-      <mat-error *ngIf="form.get('content').invalid">Please enter a receipt title.</mat-error>
+      <mat-select matInput placeholder="Choose category" formControlName="category">
+        <mat-option *ngFor="let category of categories" [value]="category.value">
+          {{category.viewValue}}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
+
+    <mat-form-field>
+      <mat-select matInput placeholder="Choose payment type" formControlName="paymentType">
+        <mat-option *ngFor="let paymentType of paymentTypes" [value]="paymentType.value">
+          {{paymentType.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- <mat-form-field>
+      <input matInput type="text" formControlName="date" placeholder="Receipt Date">
+      <mat-error *ngIf="form.get('date').invalid">Please enter a receipt date.</mat-error>
+    </mat-form-field> -->
+    <mat-form-field>
+      <input matInput [matDatepicker]="myDatepicker" formControlName="date" placeholder="Receipt Date">
+      <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+      <mat-datepicker #myDatepicker></mat-datepicker>
+      <mat-error *ngIf="form.get('date').invalid">Please enter a receipt date (M/DD/YYYY).</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput type="text" formControlName="total" placeholder="Receipt Total">
+      <mat-error *ngIf="form.get('total').invalid">Please enter a receipt total (0.00).</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <textarea matInput rows="4" formControlName="notes" placeholder="Receipt Notes"></textarea>
+      <mat-error *ngIf="form.get('notes').invalid">Please enter receipt notes.</mat-error>
+    </mat-form-field>
+
+    <!-- <p>DEBUG Form value: {{ form.value | json }}</p> -->
+
     <button mat-raised-button color="accent" type="submit">Save Receipt</button>
   </form>
 </mat-card>
