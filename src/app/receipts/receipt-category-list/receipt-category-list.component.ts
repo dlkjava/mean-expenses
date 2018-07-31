@@ -57,7 +57,6 @@ export class ReceiptCategoryListComponent implements OnInit, OnDestroy {
       .getReceiptUpdateListener()
       .subscribe((receiptData: { receipts: Receipt[]; receiptCount: number }) => {
         this.isLoading = false;
-        console.log('receiptData: %o', receiptData);
         this.totalReceipts = receiptData.receiptCount;
         this.receipts = receiptData.receipts;
       });
