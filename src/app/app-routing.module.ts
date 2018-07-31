@@ -6,6 +6,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 const routes: Routes = [
   { path: '', component: DashboardComponent },
   { path: 'receipts', loadChildren: './receipts/receipts.module#ReceiptsModule'},
+  { path: 'reports', loadChildren: './reports/reports.module#ReportsModule'},
   { path: 'auth', loadChildren: './auth/auth.module#AuthModule'}
 ];
 

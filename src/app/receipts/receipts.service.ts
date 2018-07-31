@@ -70,6 +70,10 @@ export class ReceiptsService {
     }>(BACKEND_URL + id);
   }
 
+  getReceiptsTotals() {
+    return this.http.get<{}>(BACKEND_URL + 'totals');
+  }
+
   getReceiptsByCategory(category: string, receiptsPerPage: number, currentPage: number) {
     const queryParams = `?pagesize=${receiptsPerPage}&page=${currentPage}`;
     this.http

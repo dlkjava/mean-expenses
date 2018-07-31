@@ -62,6 +62,37 @@ exports.updateReceipt = (req, res, next) => {
     });
 };
 
+exports.getReceiptsTotals = (req, res, next) => {
+  const receiptQuery = Receipt.find();
+    receiptQuery
+    .then(documents => {
+      return Receipt.countDocuments();
+    })
+    .then(count => {
+      Receipt.aggregate([
+        {"$group" : {_id: "$category", count:{$sum:1}}}
+      ])
+      .then(results => {
+        res.status(200).json({
+          message: "Receipts totals fetched successfully!",
+          categories: results,
+          totalReceipts: count
+        });
+      })
+      .catch(error => {
+        res.status(500).json({
+          message: "Fetching receipts aggregate totals failed!"
+        });
+      });
+
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "Fetching receipts totals failed!"
+      });
+    });
+};
+
 exports.getReceipts = (req, res, next) => {
   const pageSize = +req.query.pagesize;
   const currentPage = +req.query.page;
@@ -100,7 +131,7 @@ exports.getReceiptsByCategory = (req, res, next) => {
   receiptQuery
     .then(documents => {
       fetchedReceipts = documents;
-      return Receipt.countDocuments();
+      return documents && documents.length ? documents.length : 0;
     })
     .then(count => {
       res.status(200).json({

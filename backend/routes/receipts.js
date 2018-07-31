@@ -7,6 +7,8 @@ const extractFile = require("../middleware/file");
 
 const router = express.Router();
 
+router.get('/totals', ReceiptController.getReceiptsTotals);
+
 router.post("", checkAuth, extractFile, ReceiptController.createReceipt);
 
 router.put("/:id", checkAuth, extractFile, ReceiptController.updateReceipt);
