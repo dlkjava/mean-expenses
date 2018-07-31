@@ -11,10 +11,23 @@ mat-paginator {
   margin-top: 1rem;
 }
 
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
 .info-text {
   text-align: center;
 }
 
 table {
   width: 100%;
+}
+
+tr.mat-header-row, tr.mat-footer-row {
+  font-weight: bold;
+}
+
+th.mat-sort-header-sorted {
+  color: black;
 }

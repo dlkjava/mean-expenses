@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { PageEvent, MatPaginator } from '@angular/material';
+import { PageEvent, MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { Subscription } from 'rxjs';
 
 import { AuthService } from '../../auth/auth.service';
 import { Receipt } from '../../receipts/receipt.model';
 import { ReceiptsService } from '../../receipts/receipts.service';
-import { forEach } from 'lodash';
+import { forEach, sumBy } from 'lodash';
 
 @Component({
   selector: 'app-report',
@@ -21,7 +21,8 @@ export class ReportComponent implements OnInit, OnDestroy {
 
   receipts: Receipt[] = [];
   isLoading = false;
-  totalReceipts = 0;
+  receiptsCount = 0;
+  receiptsTotal = 0;
   receiptsPerPage = 20;
   currentPage = 1;
   pageSizeOptions = [1, 2, 5, 10];
@@ -30,6 +31,7 @@ export class ReportComponent implements OnInit, OnDestroy {
   private receiptsSub: Subscription;
   private authStatusSub: Subscription;
 
+  @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
@@ -45,16 +47,16 @@ export class ReportComponent implements OnInit, OnDestroy {
       .getReceiptUpdateListener()
       .subscribe((receiptData: { receipts: Receipt[]; receiptCount: number }) => {
         this.isLoading = false;
-        this.totalReceipts = receiptData.receiptCount;
+        this.receiptsCount = receiptData.receiptCount;
         this.receipts = receiptData.receipts;
-
-        // add newDate object to the response
+        this.receiptsTotal = sumBy(this.receipts, 'total');
+        // convert the date string into a Date object so that the date pipe filter can be used on view side
         forEach(this.receipts, (receipt) => {
-          const newDate = new Date(receipt.date);
-          receipt.newDate = newDate;
+          receipt.date = new Date(receipt.date);
         });
 
-        this.dataSource = this.receipts;
+        this.dataSource = new MatTableDataSource(this.receipts);
+        this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
       });
     this.userIsAuthenticated = this.authService.getIsAuth();
@@ -64,6 +66,20 @@ export class ReportComponent implements OnInit, OnDestroy {
         this.userIsAuthenticated = isAuthenticated;
         this.userId = this.authService.getUserId();
       });
+  }
+
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  /** Gets the total of all receipts. */
+  getReceiptsTotal(): number {
+    // TODO: test to compare these 2 options for large dataset
+    // NOTE: both of these return correct totals from client side, but not sure which is best
+    //    defaulting to the lodash library as it is most likly the most effecient
+    //    should do some unit testing for this with a large data set and timestamps to verify
+    // return this.dataSource && this.dataSource.filteredData.map(r => r.total).reduce((acc, value) => acc + value, 0);
+    return this.dataSource && this.dataSource.filteredData ? sumBy(this.dataSource.filteredData, 'total') : 0;
   }
 
   onChangedPage(pageData: PageEvent) {

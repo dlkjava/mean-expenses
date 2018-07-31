@@ -28,7 +28,6 @@ export class ReceiptsService {
             receipts: receiptData.receipts.map(receipt => {
               return {
                 title: receipt.title,
-                content: receipt.content,
                 id: receipt._id,
                 imagePath: receipt.imagePath,
                 category: receipt.category,
@@ -86,7 +85,6 @@ export class ReceiptsService {
             receipts: receiptData.receipts.map(receipt => {
               return {
                 title: receipt.title,
-                content: receipt.content,
                 id: receipt._id,
                 imagePath: receipt.imagePath,
                 category: receipt.category,
