@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
 import { Receipt } from '../../receipts/receipt.model';
 import { ReceiptsService } from '../../receipts/receipts.service';
+import { forEach } from 'lodash';
 
 @Component({
   selector: 'app-report',
@@ -46,6 +47,12 @@ export class ReportComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.totalReceipts = receiptData.receiptCount;
         this.receipts = receiptData.receipts;
+
+        // add newDate object to the response
+        forEach(this.receipts, (receipt) => {
+          const newDate = new Date(receipt.date);
+          receipt.newDate = newDate;
+        });
 
         this.dataSource = this.receipts;
         this.dataSource.paginator = this.paginator;
