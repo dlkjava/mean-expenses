@@ -14,7 +14,7 @@ import { ReceiptsService } from '../../receipts/receipts.service';
 export class ReportComponent implements OnInit, OnDestroy {
 
   displayedColumns: string[] = [
-    'title', 'category', 'paymentType', 'date',
+    'title', 'category', 'paymentType', 'date', 'total'
   ];
   dataSource: any;
 
